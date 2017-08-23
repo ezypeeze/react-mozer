@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {DecoratorHOC} from "./utils";
+import DecoratorHOC from "./DecoratorHOC";
 
 /**
  * The default decorator which only takes care of the error messages.

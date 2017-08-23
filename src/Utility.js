@@ -1,19 +1,3 @@
-import React from 'react';
-
-export function DecoratorHOC(Component) {
-    return class extends React.Component {
-        static defaultProps = {
-            decorator: true
-        };
-
-        render() {
-            return (
-                <Component {...this.props}/>
-            )
-        }
-    };
-}
-
 export function defaultMessageProvider(validationName, validationOptions) {
     switch (validationName) {
         case 'required':
@@ -26,5 +10,7 @@ export function defaultMessageProvider(validationName, validationOptions) {
             return "The {label}} doesn't have a valid syntax.";
         case 'email':
             return "The {label} isn't a valid email address.";
+        default:
+            return "The {label} is invalid";
     }
 }

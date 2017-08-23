@@ -1,22 +1,22 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Decorator from "./DefaultDecorator";
-import ReactDOM from 'react-dom';
-import {defaultMessageProvider} from "./utils";
+import ElementHOC from './ElementHOC';
+import Decorator from "./DefaultDecorator"
+import {defaultMessageProvider} from "./Utility";
 
 class Form extends React.Component {
     static propTypes = {
-        values: PropTypes.object,
         decorator: PropTypes.element,
         messageProvider: PropTypes.func,
         onChange: PropTypes.func,
-        onValid: PropTypes.func,
         onInvalid: PropTypes.func,
-        onSubmit: PropTypes.func
+        onSubmit: PropTypes.func,
+        onValid: PropTypes.func,
+        values: PropTypes.object
     };
 
     static defaultProps = {
-        decorator: <Decorator/>,
+        decorator: <Decorator />,
         messageProvider: defaultMessageProvider
     };
 
@@ -41,6 +41,16 @@ class Form extends React.Component {
                 {this._lookUpForElements(this.props.children)}
             </form>
         );
+    }
+
+    /**
+     * Gets a form element by name.
+     *
+     * @param name
+     * @return {./ElementHOC}
+     */
+    get(name) {
+        return this.elementReferences[name];
     }
 
     /**
@@ -75,8 +85,7 @@ class Form extends React.Component {
      */
     reset() {
         Object.keys(this.elementReferences).map(fieldName => {
-            const nativeElement = ReactDOM.findDOMNode(this.elementReferences[fieldName]);
-            if (nativeElement) nativeElement.value = '';
+            this.elementReferences[fieldName].reset && this.elementReferences[fieldName].reset();
         });
 
         this.setState({errorMessages: {}});
@@ -101,37 +110,10 @@ class Form extends React.Component {
      */
     setValue(key, value) {
         const {values} = this.state;
-        if (this.elementReferences[key]) {
-            if (this.elementReferences[key].setValue && this.elementReferences[key].getValue) {
-                this.elementReferences[key].setValue(key, value);
-                values[key] = this.elementReferences[key].setValue();
-                this.setState({values}, this._emitChange);
-                return true;
-            } else {
-                const nativeElement = ReactDOM.findDOMNode(this.elementReferences[key]);
-                if (nativeElement) {
-                    if (nativeElement.type === 'checkbox') {
-                        nativeElement.checked = !!value;
-                        values[key] = !!value;
-                    } else if (nativeElement.tagName === 'SELECT') {
-                        const items = Array.from(nativeElement.children);
-                        for (let i=0; i < items.length; i++) {
-                            if (items[i].getAttribute('value') === value) {
-                                items[i].selected = true;
-                                values[key] = value;
-                                break;
-                            }
-                        }
-                    } else {
-                        nativeElement.value = value;
-                        values[key] = value;
-                    }
-
-
-                    this.setState({values}, this._emitChange);
-                    return true;
-                }
-            }
+        if (this.elementReferences[key] && this.elementReferences[key].setValue) {
+            values[key] = this.elementReferences[key].setValue(value);
+            this.setState({values}, this._emitChange);
+            return true;
         }
 
         return false;
@@ -151,11 +133,12 @@ class Form extends React.Component {
 
         return React.Children.map(children, (child) => {
             if (this._isValidElement(child)) {
-                const element = React.cloneElement(child, Object.assign({
+                const element = React.cloneElement(child, {
                     ...child.props,
                     ref: this._setElementReference(child),
-                    onChange: this._handleElementChange(child.props.name, child.props)
-                }, this._setElementDefaultValue(child)));
+                    onChange: this._handleElementChange(child.props.name, child.props),
+                    value: this.state.values[child.props.name] || ''
+                });
 
                 return appendDecorator ? React.cloneElement(decorator, {
                     ...decorator.props,
@@ -174,16 +157,16 @@ class Form extends React.Component {
      *
      * @param validationName
      * @param fieldName
+     * @param resolve
      * @private
      */
     _handleValidationCallback = (validationName, fieldName, resolve) => (result) => {
         const {messageProvider} = this.props;
         const errorMessages = this.state.errorMessages;
         errorMessages[fieldName] = [];
-        console.log(this.elementReferences, fieldName);
         if (!result) {
             errorMessages[fieldName].push(messageProvider(validationName, result, this.elementReferences[fieldName]));
-            return this.setState({errorMessages}, () => resolve(false));
+            return this.setState({errorMessages, valid: false}, () => resolve(false));
         } else if (typeof result === 'object') {
             let valid = true;
             Object.keys(result).map(v => {
@@ -193,7 +176,7 @@ class Form extends React.Component {
                 }
             });
 
-            return this.setState({errorMessages}, () => resolve(valid));
+            return this.setState({errorMessages, valid}, () => resolve(valid));
         }
 
         return resolve(true);
@@ -207,62 +190,13 @@ class Form extends React.Component {
      * @private
      */
     _isValidElement(child) {
-        const isValid = child && child.props && !!child.props.name;
+        const isValid = child && child.props && !!child.props.name && child.type && child.type.isFormElementHOC;
         if (isValid && child.props.value) {
-            this.setState({values: this._setElementValue(child.props.name, child.props.value)})
+            this.setState({values: Object.assign(this.state.values, {[child.props.name]: child.props.value})});
         }
 
         return isValid;
     }
-
-    /**
-     * Parses and sets element value from the native elements events.
-     *
-     * @param key
-     * @param value
-     * @return {Object|{}}
-     * @private
-     */
-    _setElementValue = (key, value) => {
-        const {values} = this.state;
-        if (value && value.target && value.target.hasOwnProperty('checked')) {
-            values[key] = value.target.checked;
-        } else if (value && value.target && value.target.options) {
-            values[key] = [];
-            for (let i = 0; i < value.target.options.length; i++) {
-                const option = value.target.options[i];
-                option.selected && values[key].push(option.value);
-            }
-        } else if (value && value.target && value.target.value) {
-            values[key] = value.target.value;
-        } else {
-            values[key] = value && value.length && value.length > 0 ? value : '';
-        }
-
-        return values;
-    };
-
-    /**
-     * Sets Element default value.
-     *
-     * @param child
-     * @private
-     */
-    _setElementDefaultValue = (child)  => {
-        const {values} = this.state;
-
-        if (child.type === 'select' && child.props.multiple) {
-            return {
-                value: values[child.props.name] ?
-                    Array.isArray(values[child.props.name]) ? values[child.props.name] : [values[child.props.name]] :
-                    []
-            };
-        } else if (child.type === 'input' && child.props.type === 'checkbox') {
-            return {checked: values[child.props.name] || false};
-        } else {
-            return {value: values[child.props.name] || ''};
-        }
-    };
 
     /**
      * Sets Element mounted component reference. This will be used to "cache" elements, for faster dom tree discovering.
@@ -284,7 +218,7 @@ class Form extends React.Component {
      * @private
      */
     _handleElementChange = (name, childProps) => (value) => {
-        this.setState({values: this._setElementValue(name, value)}, this._emitChange)
+        this.setState({values: Object.assign(this.state.values, {[name]: value})}, this._emitChange);
     };
 
     /**

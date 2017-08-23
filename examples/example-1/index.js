@@ -1,8 +1,9 @@
 import React from 'react';
-import {Form, DefaultDecorator, Validators} from '../../index';
+import {Form, DefaultDecorator, Validators, Input, Select} from '../../index';
 import BootstrapDecorator from '../BootstrapDecorator';
+import CustomElementChoose from "./CustomElementChoose";
 
-class SimpleForm extends React.Component {
+class ExampleOneForm extends React.Component {
     static propTypes = {};
     static defaultProps = {};
     state = {
@@ -21,7 +22,8 @@ class SimpleForm extends React.Component {
 
         return (
             <div className="container">
-                <h3>Simple Form</h3>
+                <h3>Example One Form</h3>
+                <hr />
                 {typeof valid === 'boolean' && (<pre>Is form valid: {valid ? 'yes' : 'no'}</pre>)}
                 <pre>{JSON.stringify(values)}</pre>
                 <Form ref="form"
@@ -33,25 +35,29 @@ class SimpleForm extends React.Component {
                 >
                     <div className="row">
                         <div className="col">
-                            <input label="First Name" type="text" name="firstname"/>
+                            <Input label="First Name" type="text" name="firstname"/>
                         </div>
                         <div className="col">
                             <DefaultDecorator>
-                                <input label="Last Name" type="text" name="lastname"/>
+                                <Input label="Last Name" type="text" name="lastname"/>
                             </DefaultDecorator>
                         </div>
                     </div>
                     <div>
-                        <input label="Address" type="text" name="address"/>
+                        <Input label="Address" type="text" name="address"/>
                     </div>
 
-                    <select name="country" multiple>
+                    <Select name="country" multiple>
                         <option value="portugal">Portugal</option>
                         <option value="spain">Spain</option>
                         <option value="england">England</option>
-                    </select>
+                    </Select>
 
-                    <input type="checkbox" name="terms"/>
+                    <CustomElementChoose name="choose" items={['first', 'second', 'third']}/>
+
+                    <Input type="radio" name="gender" radio={{'Male': 'male', 'Female': 'female'}}/>
+
+                    <Input type="checkbox" name="terms"/>
 
                     <button type="submit">Submit</button>
                 </Form>
@@ -81,4 +87,4 @@ class SimpleForm extends React.Component {
     };
 }
 
-export default SimpleForm;
+export default ExampleOneForm;

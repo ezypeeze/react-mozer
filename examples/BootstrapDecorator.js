@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {DecoratorHOC} from "../index";
 import cx from 'classnames';
+import {DecoratorHOC} from "../index";
 
 let lastId = 0;
 
@@ -40,6 +40,8 @@ class BootstrapDecorator extends React.Component {
                     switch (child.props.type) {
                         case 'checkbox':
                             return this._renderCheckboxElement(child, label, id);
+                        case 'radio':
+                            return this._renderRadioElement(child, label, id);
                         default:
                             return this._renderGenericElement(child, label, id);
                     }
@@ -101,6 +103,24 @@ class BootstrapDecorator extends React.Component {
                 )}
             </div>
         );
+    }
+
+    _renderRadioElement(child, label, id) {
+        const {className, errorMessages} = this.props;
+
+        return React.cloneElement(child, {
+            ...child.props,
+            label: undefined,
+            id,
+            className: cx(child.props.className, 'custom-control-input'),
+            wrapper: (component, label) => (
+                <label className="custom-control custom-radio">
+                    {component}
+                    <span className="custom-control-indicator" />
+                    <span className="custom-control-description">{label}</span>
+                </label>
+            )
+        });
     }
 }
 
