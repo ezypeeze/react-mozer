@@ -31,23 +31,17 @@ class BootstrapDecorator extends React.Component {
 
     render() {
         const {horizontal, children} = this.props;
+        const child = children[0] || children;
+        const {label, id} = getSpecialAttributes(child, horizontal);
 
-        return (
-            <div>
-                {React.Children.map(children, (child) => {
-                    const {label, id} = getSpecialAttributes(child, horizontal);
-
-                    switch (child.props.type) {
-                        case 'checkbox':
-                            return this._renderCheckboxElement(child, label, id);
-                        case 'radio':
-                            return this._renderRadioElement(child, label, id);
-                        default:
-                            return this._renderGenericElement(child, label, id);
-                    }
-                })}
-            </div>
-        );
+        switch (child.props.type) {
+            case 'checkbox':
+                return this._renderCheckboxElement(child, label, id);
+            case 'radio':
+                return this._renderRadioElement(child, label, id);
+            default:
+                return this._renderGenericElement(child, label, id);
+        }
     }
 
     _renderGenericElement(child, label, id) {
@@ -108,19 +102,25 @@ class BootstrapDecorator extends React.Component {
     _renderRadioElement(child, label, id) {
         const {className, errorMessages} = this.props;
 
-        return React.cloneElement(child, {
-            ...child.props,
-            label: undefined,
-            id,
-            className: cx(child.props.className, 'custom-control-input'),
-            wrapper: (component, label) => (
-                <label className="custom-control custom-radio">
-                    {component}
-                    <span className="custom-control-indicator" />
-                    <span className="custom-control-description">{label}</span>
-                </label>
-            )
-        });
+        return (
+            <label className={cx("custom-control custom-radio", className)}>
+                {React.cloneElement(child, {
+                    ...child.props,
+                    label: undefined,
+                    id,
+                    className: cx(child.props.className, 'custom-control-input'),
+                })}
+                <span className="custom-control-indicator" />
+                <span className="custom-control-description">{label}</span>
+                {errorMessages && errorMessages.length > 0 && (
+                    <div className="form-control-feedback">
+                        {errorMessages.map((message, i) => (
+                            <span key={i}>{message.replace('{label}', label)} <br/></span>
+                        ))}
+                    </div>
+                )}
+            </label>
+        );
     }
 }
 

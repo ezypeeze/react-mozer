@@ -6,48 +6,42 @@ class Input extends React.Component {
 
     static propTypes = {
         name: PropTypes.string.isRequired,
-        value: PropTypes.any,
-        radio: PropTypes.object
+        value: PropTypes.any
     };
 
     render() {
-        const {value, onTouch, type, radio, wrapper, ...props} = this.props;
+        const {value, onTouch, type, radioValue, ...props} = this.props;
 
-        if (radio && type === 'radio') {
-            return (
-                <span>
-                    {Object.keys(radio).map((label, i) => {
-                        const input = (
-                            <input {...props}
-                                   type={type}
-                                   onChange={this.handleChange}
-                                   onFocus={onTouch}
-                                   value={radio[label]}
-                                   checked={value === radio[label]}
-                            />
-                        );
-
-                        return (
-                            <span key={i}>
-                                {wrapper && wrapper(input, label, value)}
-                                {!wrapper && input}
-                                {!wrapper && label}
-                            </span>
-                        );
-                    })}
-                </span>
-            )
+        switch (type) {
+            case 'radio':
+                return (
+                    <input {...props}
+                           type={type}
+                           onChange={this.handleChange}
+                           onFocus={onTouch}
+                           value={radioValue}
+                           checked={value === radioValue}
+                    />
+                );
+            case 'checkbox':
+                return (
+                    <input {...props}
+                           type={type}
+                           onChange={this.handleChange}
+                           onFocus={onTouch}
+                           checked={!!value}
+                    />
+                );
+            default:
+                return (
+                    <input {...props}
+                           type={type}
+                           onChange={this.handleChange}
+                           onFocus={onTouch}
+                           value={value}
+                    />
+                );
         }
-
-        return (
-            <input {...props}
-                   type={type}
-                   onChange={this.handleChange}
-                   onFocus={onTouch}
-                   value={type !== 'checkbox' ? value : undefined}
-                   checked={type === 'checkbox' || type === 'radio' ? !!value : false}
-            />
-        );
     }
 
     handleChange = (event) => {

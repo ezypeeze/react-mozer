@@ -55,7 +55,10 @@ class ExampleOneForm extends React.Component {
 
                     <CustomElementChoose name="choose" items={['first', 'second', 'third']}/>
 
-                    <Input type="radio" name="gender" radio={{'Male': 'male', 'Female': 'female'}}/>
+                    <h4>Gender</h4>
+                    <Input label="Male" type="radio" name="gender" radioValue="male"/>
+                    <Input label="Female" type="radio" name="gender" radioValue="female"/>
+                    <Input label="Both" type="radio" name="gender" radioValue="both"/>
 
                     <Input type="checkbox" name="terms"/>
 
