@@ -12,6 +12,7 @@ class Form extends React.Component {
         onInvalid: PropTypes.func,
         onSubmit: PropTypes.func,
         onValid: PropTypes.func,
+        validations: PropTypes.object,
         values: PropTypes.object
     };
 
@@ -21,8 +22,9 @@ class Form extends React.Component {
     };
 
     state = {
+        errorMessages: {},
+        validations: this.props.validations || {},
         values: this.props.values || {},
-        errorMessages: {}
     };
 
     elementReferences = {};
@@ -59,16 +61,16 @@ class Form extends React.Component {
      * @return {Promise<boolean>}
      */
     validate() {
-        const {validations, values} = this.props;
+        const {validations, values} = this.state;
         const promises = [];
 
         Object.keys(validations).map(fieldName => {
             (validations[fieldName] || []).map(cb => {
                 promises.push(new Promise(resolve => {
                     cb(values[fieldName], this._handleValidationCallback(cb.name, fieldName, resolve), {
-                        fieldSetName: name,
-                        fieldName,
-                        formValues: this.state.values
+                        name: fieldName,
+                        component: this.elementReferences[fieldName],
+                        root: this
                     });
                 }));
             });
@@ -112,11 +114,40 @@ class Form extends React.Component {
         const {values} = this.state;
         if (this.elementReferences[key] && this.elementReferences[key].setValue) {
             values[key] = this.elementReferences[key].setValue(value);
-            this.setState({values}, this._emitChange);
+            this.setState({values}, this._emitChange(this.elementReferences[key]));
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Sets validations of a form element (newValidations must be an array).
+     * If key is not present, cleans and sets new validations to all form elements (newValidations must be an object of arrays).
+     *
+     * @param key
+     * @param newValidations
+     */
+    setValidations(key, newValidations) {
+        const {validations} = this.state;
+        let state = key && validations ?
+            {validations: Object.assign(validations, {[key]: newValidations})} : {validations: newValidations};
+
+        this.setState(state);
+    }
+
+    /**
+     * Cleans validations of a form element.
+     * If key is not present, clean all validations of all form elements.
+     *
+     * @param key
+     */
+    cleanValidations(key) {
+        const {validations} = this.state;
+        let state = key && validations && validations[key] ?
+            {validations: Object.assign(validations, {[key]: []})} : {validations: {}};
+
+        this.setState(state);
     }
 
     /**
@@ -135,8 +166,9 @@ class Form extends React.Component {
             if (this._isValidElement(child)) {
                 const element = React.cloneElement(child, {
                     ...child.props,
-                    ref: this._setElementReference(child),
                     onChange: this._handleElementChange(child.props.name, child.props),
+                    ref: this._setElementReference(child),
+                    valid: errorMessages && errorMessages[child.props.name] && errorMessages[child.props.name].length > 0,
                     value: this.state.values[child.props.name] || ''
                 });
 
@@ -218,7 +250,7 @@ class Form extends React.Component {
      * @private
      */
     _handleElementChange = (name, childProps) => (value) => {
-        this.setState({values: Object.assign(this.state.values, {[name]: value})}, this._emitChange);
+        this.setState({values: Object.assign(this.state.values, {[name]: value})}, this._emitChange(this.elementReferences[name]));
     };
 
     /**
@@ -226,8 +258,8 @@ class Form extends React.Component {
      *
      * @private
      */
-    _emitChange = () => {
-        this.props.onChange && this.props.onChange(this.state.values);
+    _emitChange = (instance) => () => {
+        this.props.onChange && this.props.onChange(this.state.values, instance);
     };
 
     /**

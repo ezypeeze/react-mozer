@@ -10,7 +10,7 @@ class Select extends React.Component {
     };
 
     render() {
-        let {value, onTouch, children, ...props} = this.props;
+        let {valid, value, onTouch, children, ...props} = this.props;
         if (!Array.isArray(value)) value = [value];
 
         return (

@@ -9,11 +9,10 @@ export default function ElementHOC(Component) {
             label: PropTypes.string,
             onChange: PropTypes.func,
             onTouch: PropTypes.func,
-            value: PropTypes.any
+            value: PropTypes.any,
         };
 
         state = {
-            value: this.props.value,
             touched: false,
             changed: false
         };
@@ -29,9 +28,17 @@ export default function ElementHOC(Component) {
                     {...this.props}
                     onChange={this.handleChange}
                     onTouch={this.handleTouch}
-                    value={this.state.value}
                 />
             );
+        }
+
+        /**
+         * Gets the form element name.
+         *
+         * @return {string}
+         */
+        getName() {
+            return this.props.name;
         }
 
         /**
@@ -39,10 +46,9 @@ export default function ElementHOC(Component) {
          */
         reset() {
             this.setState({
-                value: '',
                 changed: false,
                 touched: false
-            });
+            }, () => this.handleChange(''));
         }
 
         /**
@@ -63,7 +69,16 @@ export default function ElementHOC(Component) {
          * @return {boolean}
          */
         getValue() {
-            return this.state.value;
+            return this.props.value;
+        }
+
+        /**
+         * Check if the form element is currently valid.
+         *
+         * @return {boolean}
+         */
+        isValid() {
+            return this.props.valid;
         }
 
         /**
@@ -88,7 +103,7 @@ export default function ElementHOC(Component) {
          * Handler when the value of the form element is changed.
          */
         handleChange = value => {
-            this.setState({value, changed: true});
+            this.setState({changed: true});
             this.props.onChange && this.props.onChange(value);
         };
 

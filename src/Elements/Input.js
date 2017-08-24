@@ -10,7 +10,7 @@ class Input extends React.Component {
     };
 
     render() {
-        const {value, onTouch, type, radioValue, ...props} = this.props;
+        const {valid, value, onTouch, type, radioValue, ...props} = this.props;
 
         switch (type) {
             case 'radio':

@@ -13,7 +13,8 @@ class ExampleOneForm extends React.Component {
             country: 'spain'
         },
         validations: {
-            address: [Validators.required()]
+            address: [Validators.required()],
+            gender: [Validators.required()]
         }
     };
 
@@ -81,7 +82,11 @@ class ExampleOneForm extends React.Component {
         );
     }
 
-    _handleChange = (values) => {
+    _handleChange = (values, element) => {
+        if (element.getName() === 'lastname') {
+            this.refs.form.setValidations('firstname', [Validators.required()]);
+        }
+
         this.setState({values});
     };
 
