@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 
 export default function ElementHOC(Component) {
     return class extends React.Component {
-        static isFormElementHOC = true;
-        static displayName = Component.displayName || Component.name || 'ElementComponent';
+        static displayName = 'ElementComponent';
         static propTypes = {
             label: PropTypes.string,
             onChange: PropTypes.func,
             onTouch: PropTypes.func,
             value: PropTypes.any,
+            root: PropTypes.element
         };
 
         state = {
@@ -30,15 +30,6 @@ export default function ElementHOC(Component) {
                     onTouch={this.handleTouch}
                 />
             );
-        }
-
-        /**
-         * Gets the form element name.
-         *
-         * @return {string}
-         */
-        getName() {
-            return this.props.name;
         }
 
         /**
@@ -70,6 +61,24 @@ export default function ElementHOC(Component) {
          */
         getValue() {
             return this.props.value;
+        }
+
+        /**
+         * Gets the form element name.
+         *
+         * @return {string}
+         */
+        getName() {
+            return this.props.name;
+        }
+
+        /**
+         * Gets the root component.
+         *
+         * @return {*}
+         */
+        getRoot() {
+            return this.props.root;
         }
 
         /**
@@ -111,7 +120,7 @@ export default function ElementHOC(Component) {
          * Handler when a 'touch' event is fired on the form element.
          */
         handleTouch = () => {
-            this.setState({touch: true});
+            this.setState({touched: true});
             this.props.onTouch && this.props.onTouch();
         };
 

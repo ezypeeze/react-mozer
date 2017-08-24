@@ -1,5 +1,5 @@
 import React from 'react';
-import {Form, DefaultDecorator, Validators, Input, Select} from '../../index';
+import {Form, DefaultDecorator, Validators, Input, Select} from '../../src/index';
 import BootstrapDecorator from '../BootstrapDecorator';
 import CustomElementChoose from "./CustomElementChoose";
 
@@ -32,6 +32,7 @@ class ExampleOneForm extends React.Component {
                       onChange={this._handleChange}
                       values={values}
                       validations={validations}
+                      displayErrorsCondition={this._handleValidationLogic}
                       decorator={<BootstrapDecorator size="sm" horizontal={true}/>}
                 >
                     <div className="row">
@@ -63,7 +64,7 @@ class ExampleOneForm extends React.Component {
 
                     <Input type="checkbox" name="terms"/>
 
-                    <button type="submit">Submit</button>
+                    <button disabled={!valid} type="submit">Submit</button>
                 </Form>
 
 
@@ -82,17 +83,25 @@ class ExampleOneForm extends React.Component {
         );
     }
 
+    _handleValidationLogic = (element) => {
+        return element.valueChanged();
+    };
+
     _handleChange = (values, element) => {
         if (element.getName() === 'lastname') {
-            this.refs.form.setValidations('firstname', [Validators.required()]);
+            if (element.getValue()) {
+                this.refs.form.setValidations('firstname', [Validators.required()]);
+            } else {
+                this.refs.form.cleanValidations('firstname');
+            }
         }
 
-        this.setState({values});
+        this.refs.form.validate().then(valid => this.setState({values, valid}));
     };
 
     _handleSubmit = (values, valid) => {
         this.setState({values, valid});
-    };
+    }
 }
 
 export default ExampleOneForm;

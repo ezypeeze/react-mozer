@@ -12,6 +12,7 @@ class Form extends React.Component {
         onInvalid: PropTypes.func,
         onSubmit: PropTypes.func,
         onValid: PropTypes.func,
+        displayErrorsCondition: PropTypes.func,
         validations: PropTypes.object,
         values: PropTypes.object
     };
@@ -25,9 +26,20 @@ class Form extends React.Component {
         errorMessages: {},
         validations: this.props.validations || {},
         values: this.props.values || {},
+        submitted: false
     };
 
+    /**
+     * Form Element References
+     */
     elementReferences = {};
+
+    /**
+     * After first mounting render, we will validate the data without showing error messages.
+     */
+    componentDidMount() {
+        this.validate(false);
+    }
 
     /**
      * The component render method.
@@ -46,6 +58,24 @@ class Form extends React.Component {
     }
 
     /**
+     * Check if the form was already submitted.
+     *
+     * @return {boolean}
+     */
+    isSubmitted() {
+        return this.state.submitted;
+    }
+
+    /**
+     * Check if the form is currently valid.
+     *
+     * @return {boolean}
+     */
+    isValid() {
+        return this.state.valid;
+    }
+
+    /**
      * Gets a form element by name.
      *
      * @param name
@@ -58,16 +88,26 @@ class Form extends React.Component {
     /**
      * Validates the form.
      *
+     * @param displayErrors
+     *
      * @return {Promise<boolean>}
      */
-    validate() {
+    validate(displayErrors = true) {
         const {validations, values} = this.state;
         const promises = [];
 
+        // Clean all messages since we are validating everything.
+        this.state.errorMessages = {};
         Object.keys(validations).map(fieldName => {
+            const displayFieldErrors = displayErrors ?
+                this.props.displayErrorsCondition &&
+                this.props.displayErrorsCondition(this.elementReferences[fieldName])
+                    :
+                false;
+
             (validations[fieldName] || []).map(cb => {
                 promises.push(new Promise(resolve => {
-                    cb(values[fieldName], this._handleValidationCallback(cb.name, fieldName, resolve), {
+                    cb(values[fieldName], this._handleValidationCallback(cb.name, fieldName, displayFieldErrors, resolve), {
                         name: fieldName,
                         component: this.elementReferences[fieldName],
                         root: this
@@ -79,7 +119,10 @@ class Form extends React.Component {
         return Promise.all(promises)
             .then(valid => {
                 return valid.filter(result => !result).length === 0;
-            });
+            })
+            .then(valid => new Promise(resolve => {
+                this.setState({valid}, () => resolve(valid));
+            }))
     }
 
     /**
@@ -189,24 +232,30 @@ class Form extends React.Component {
      *
      * @param validationName
      * @param fieldName
+     * @param displayErrors
      * @param resolve
      * @private
      */
-    _handleValidationCallback = (validationName, fieldName, resolve) => (result) => {
+    _handleValidationCallback = (validationName, fieldName, displayErrors, resolve) => (result) => {
         const {messageProvider} = this.props;
         const errorMessages = this.state.errorMessages;
+
         errorMessages[fieldName] = [];
         if (!result) {
+            if (!displayErrors) return resolve(false);
             errorMessages[fieldName].push(messageProvider(validationName, result, this.elementReferences[fieldName]));
+
             return this.setState({errorMessages, valid: false}, () => resolve(false));
         } else if (typeof result === 'object') {
             let valid = true;
             Object.keys(result).map(v => {
                 if ((typeof result[v] === 'boolean' && !result[v]) || (result[v].hasOwnProperty('valid') && !result[v].valid)) {
-                    errorMessages[fieldName].push(messageProvider(v, result[v], this.elementReferences[fieldName]));
+                    displayErrors && errorMessages[fieldName].push(messageProvider(v, result[v], this.elementReferences[fieldName]));
                     valid = false;
                 }
             });
+
+            if (!displayErrors) return resolve(valid);
 
             return this.setState({errorMessages, valid}, () => resolve(valid));
         }
@@ -222,7 +271,7 @@ class Form extends React.Component {
      * @private
      */
     _isValidElement(child) {
-        const isValid = child && child.props && !!child.props.name && child.type && child.type.isFormElementHOC;
+        const isValid = child && child.props && !!child.props.name && child.type && child.type.displayName === 'ElementComponent';
         if (isValid && child.props.value) {
             this.setState({values: Object.assign(this.state.values, {[child.props.name]: child.props.value})});
         }
@@ -271,7 +320,12 @@ class Form extends React.Component {
      */
     _handleSubmit = (event) => {
         event.preventDefault();
-        this.validate().then(valid => this.props.onSubmit && this.props.onSubmit(this.state.values, valid, event));
+        this.validate()
+            .then(valid => {
+                this.setState({submitted: true}, () => {
+                    this.props.onSubmit && this.props.onSubmit(this.state.values, valid, event);
+                });
+            });
     }
 
 }

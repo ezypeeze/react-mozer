@@ -2,7 +2,7 @@
     "name": "react-mozer",
     "version": "0.0.1",
     "description": "Reactish Reactive Forms",
-    "main": "index.js",
+    "main": "build/index.js",
     "scripts": {
         "start": "webpack-dev-server --config examples/webpack.config.js --content-base examples",
         "build": "babel index.js -d build",

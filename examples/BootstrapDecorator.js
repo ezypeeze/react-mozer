@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
-import {DecoratorHOC} from "../index";
+import {DecoratorHOC} from "../src/index";
 
 let lastId = 0;
 
