@@ -64,7 +64,7 @@ class ExampleOneForm extends React.Component {
 
                     <Input type="checkbox" name="terms"/>
 
-                    <button disabled={!valid} type="submit">Submit</button>
+                    <button type="submit">Submit</button>
                 </Form>
 
 
@@ -84,7 +84,8 @@ class ExampleOneForm extends React.Component {
     }
 
     _handleValidationLogic = (element) => {
-        return element.valueChanged();
+        return true;
+        // return element.valueChanged();
     };
 
     _handleChange = (values, element) => {

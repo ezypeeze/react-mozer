@@ -1,5 +1,5 @@
-.babelrc
-src
-CODE_OF_CONDUCT.md
-examples
-tests
+/.babelrc
+/src
+/CODE_OF_CONDUCT.md
+/examples
+/tests

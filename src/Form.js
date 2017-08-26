@@ -100,8 +100,8 @@ class Form extends React.Component {
         this.state.errorMessages = {};
         Object.keys(validations).map(fieldName => {
             const displayFieldErrors = displayErrors ?
-                this.props.displayErrorsCondition &&
-                this.props.displayErrorsCondition(this.elementReferences[fieldName])
+                this.props.displayErrorsCondition ?
+                    this.props.displayErrorsCondition(this.elementReferences[fieldName]) : true
                     :
                 false;
 

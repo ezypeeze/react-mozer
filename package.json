@@ -5,7 +5,7 @@
     "main": "build/index.js",
     "scripts": {
         "start": "webpack-dev-server --config examples/webpack.config.js --content-base examples",
-        "build": "babel index.js -d build",
+        "build": "webpack -p --config webpack.config.js",
         "lint": "eslint src/**; exit 0",
         "lint:watch": "esw -w src/**",
         "prepublish": "npm run build",
