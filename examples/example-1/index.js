@@ -14,6 +14,7 @@ class ExampleOneForm extends React.Component {
         },
         validations: {
             address: [Validators.required()],
+            email: [Validators.email()],
             gender: [Validators.required()]
         }
     };
@@ -45,6 +46,9 @@ class ExampleOneForm extends React.Component {
                             </DefaultDecorator>
                         </div>
                     </div>
+
+                    <Input label="Email" type="text" name="email" />
+
                     <div>
                         <Input label="Address" type="text" name="address"/>
                     </div>
