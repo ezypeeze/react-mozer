@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
-import {DecoratorHOC} from "../src/index";
+import {DecoratorHOC} from "../src";
 
 let lastId = 0;
 
@@ -47,29 +47,31 @@ class BootstrapDecorator extends React.Component {
     _renderGenericElement(child, label, id) {
         const {className, errorMessages, horizontal, size} = this.props;
 
+        const children = [
+            React.cloneElement(child, {
+                ...child.props,
+                key: 1,
+                id,
+                className: cx(child.props.className, 'form-control', `form-control-${size}`, {
+                    'is-invalid': errorMessages && errorMessages.length > 0,
+                })
+            }),
+            errorMessages && errorMessages.length > 0 && (
+                <div key="2" className="invalid-feedback">
+                    {errorMessages.map((message, i) => (
+                        <span key={i}>{message} <br/></span>
+                    ))}
+                </div>
+            )
+        ];
+
         return (
-            <div className={cx("form-group", className, {
-                "has-danger": errorMessages && errorMessages.length > 0,
-                row: horizontal
-            })}>
+            <div className={cx("form-group", className, {row: horizontal})}>
                 {label && (
                     <label htmlFor={id} className={cx({"col-sm-2 col-form-label": horizontal})}>{label}</label>
                 )}
-                <div className={cx({"col-sm-10": horizontal})}>
-                    {React.cloneElement(child, {
-                        ...child.props,
-                        label: undefined,
-                        id,
-                        className: cx(child.props.className, 'form-control', `form-control-${size}`)
-                    })}
-                    {errorMessages && errorMessages.length > 0 && (
-                        <div className="form-control-feedback">
-                            {errorMessages.map((message, i) => (
-                                <span key={i}>{message.replace('{label}', label)} <br/></span>
-                            ))}
-                        </div>
-                    )}
-                </div>
+                {horizontal && (<div className="col-sm-10">{children}</div>)}
+                {!horizontal && children}
             </div>
         );
     }
@@ -82,16 +84,15 @@ class BootstrapDecorator extends React.Component {
                 <label className="form-check-label">
                     {React.cloneElement(child, {
                         ...child.props,
-                        label: undefined,
                         id,
                         className: cx(child.props.className, 'form-check-input')
                     })}
                     {label}
                 </label>
                 {errorMessages && errorMessages.length > 0 && (
-                    <div className="form-control-feedback">
+                    <div className="invalid-feedback">
                         {errorMessages.map((message, i) => (
-                            <span key={i}>{message.replace('{label}', label)} <br/></span>
+                            <span key={i}>{message} <br/></span>
                         ))}
                     </div>
                 )}
@@ -106,16 +107,15 @@ class BootstrapDecorator extends React.Component {
             <label className={cx("custom-control custom-radio", className)}>
                 {React.cloneElement(child, {
                     ...child.props,
-                    label: undefined,
                     id,
                     className: cx(child.props.className, 'custom-control-input'),
                 })}
                 <span className="custom-control-indicator" />
                 <span className="custom-control-description">{label}</span>
                 {errorMessages && errorMessages.length > 0 && (
-                    <div className="form-control-feedback">
+                    <div className="invalid-feedback">
                         {errorMessages.map((message, i) => (
-                            <span key={i}>{message.replace('{label}', label)} <br/></span>
+                            <span key={i}>{message} <br/></span>
                         ))}
                     </div>
                 )}

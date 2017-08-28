@@ -73,6 +73,15 @@ export default function ElementHOC(Component) {
         }
 
         /**
+         * Gets the form element label.
+         *
+         * @return {string}
+         */
+        getLabel() {
+            return this.props.label;
+        }
+
+        /**
          * Gets the root component.
          *
          * @return {*}

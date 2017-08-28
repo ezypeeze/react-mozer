@@ -67,3 +67,18 @@ export function email() {
         });
     }
 }
+
+export function equalTo(field) {
+
+    return (value, done, {root}) => {
+        const equalToField = root.get(field);
+        if (!equalToField) throw 'The field doesnt belong to the form';
+
+        done({
+            equalTo: {
+                valid: equalToField.getValue() === value,
+                equalToLabel: equalToField.getLabel() || equalToField.getName()
+            }
+        })
+    }
+}

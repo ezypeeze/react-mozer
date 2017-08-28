@@ -15,7 +15,8 @@ class ExampleOneForm extends React.Component {
         validations: {
             address: [Validators.required()],
             email: [Validators.email()],
-            gender: [Validators.required()]
+            gender: [Validators.required()],
+            passwordConfirmation: [Validators.equalTo('password')]
         }
     };
 
@@ -67,6 +68,10 @@ class ExampleOneForm extends React.Component {
                     <Input label="Both" type="radio" name="gender" radioValue="both"/>
 
                     <Input type="checkbox" name="terms"/>
+
+                    <Input label="Password" type="text" name="password" />
+
+                    <Input label="Confirm Password" type="text" name="passwordConfirmation" />
 
                     <button type="submit">Submit</button>
                 </Form>
