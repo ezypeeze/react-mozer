@@ -165,6 +165,34 @@ class Form extends React.Component {
     }
 
     /**
+     * Sets custom error messages to the form elements.
+     *
+     * @param errorMessages
+     * @return {Form}
+     */
+    setErrorMessages(errorMessages) {
+        this.setState({errorMessages});
+
+        return this;
+    }
+
+    /**
+     * Cleans all error messages. If name is present, cleans error messages for the form element with that name.
+     *
+     * @param name
+     * @return {Form}
+     */
+    cleanErrorMessages(name) {
+        let errorMessages = this.state.errorMessages;
+        if (name && errorMessages[name]) delete errorMessages[name];
+        else errorMessages = {};
+
+        this.setState({errorMessages});
+
+        return this;
+    }
+
+    /**
      * Sets validations of a form element (newValidations must be an array).
      * If key is not present, cleans and sets new validations to all form elements (newValidations must be an object of arrays).
      *

@@ -1,5 +1,4 @@
 export function defaultMessageProvider(validationName, validationOptions, element) {
-    console.log(element);
     const label = element.getLabel() || element.getName();
 
     switch (validationName) {
