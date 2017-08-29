@@ -6,12 +6,13 @@ import {defaultMessageProvider} from "./Utility";
 
 class Form extends React.Component {
     static propTypes = {
+        className: PropTypes.string,
         decorator: PropTypes.element,
         messageProvider: PropTypes.func,
         onChange: PropTypes.func,
-        onInvalid: PropTypes.func,
         onSubmit: PropTypes.func,
         onValid: PropTypes.func,
+        onInvalid: PropTypes.func,
         displayErrorsCondition: PropTypes.func,
         validations: PropTypes.object,
         values: PropTypes.object
@@ -51,7 +52,7 @@ class Form extends React.Component {
         this.elementReferences = {};
 
         return (
-            <form onSubmit={this._handleSubmit}>
+            <form onSubmit={this._handleSubmit} className={this.props.className}>
                 {this._lookUpForElements(this.props.children)}
             </form>
         );
