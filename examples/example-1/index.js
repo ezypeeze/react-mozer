@@ -30,7 +30,7 @@ class ExampleOneForm extends React.Component {
                 {typeof valid === 'boolean' && (<pre>Is form valid: {valid ? 'yes' : 'no'}</pre>)}
                 <pre>{JSON.stringify(values)}</pre>
                 <Form ref="form"
-                      onSubmit={this._handleSubmit}
+                      onSubmit={this._handleSubmtt}
                       onChange={this._handleChange}
                       values={values}
                       validations={validations}

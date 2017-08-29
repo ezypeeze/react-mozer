@@ -1,6 +1,6 @@
 {
     "name": "react-mozer",
-    "version": "0.0.1",
+    "version": "0.1.5",
     "description": "Reactish Reactive Forms",
     "main": "build/index.js",
     "scripts": {
@@ -9,10 +9,33 @@
         "lint": "eslint src/**; exit 0",
         "lint:watch": "esw -w src/**",
         "prepublish": "npm run build",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "jest tests --ci"
+    },
+    "keywords": [
+        "react",
+        "form",
+        "forms",
+        "validation",
+        "decorator",
+        "validators",
+        "decoration",
+        "element",
+        "elements",
+        "form-elements",
+        "reactive"
+    ],
+    "homepage": "https://github.com/ezypeeze/react-mozer",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/ezypeeze/react-mozer"
     },
     "author": "Pedro Pereira",
     "license": "MIT",
+    "dependencies": {
+        "classnames": "^2.2.5",
+        "react": "^15.6.1",
+        "react-dom": "^15.6.1"
+    },
     "devDependencies": {
         "babel-cli": "^6.24.1",
         "babel-core": "^6.25.0",
@@ -35,9 +58,7 @@
         "webpack": "^3.4.0",
         "webpack-dev-server": "^2.6.1"
     },
-    "dependencies": {
-        "classnames": "^2.2.5",
-        "react": "^15.6.1",
-        "react-dom": "^15.6.1"
+    "peerDependencies": {
+        "react": "^15.0.0"
     }
 }

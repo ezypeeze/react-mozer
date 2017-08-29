@@ -1,9 +1,9 @@
 /.babelrc
 /.eslintrc
 /.editorconfig
+/.travis.yml
 /src
 /CODE_OF_CONDUCT.md
 /examples
 /tests
 /webpack.config.js
-/README.md

@@ -1,5 +1,7 @@
 # react-mozer
-React Reactive Form Components.
+Reactish Reactive Forms.
+
+[![Build Status](https://travis-ci.org/ezypeeze/react-mozer.svg?branch=master)](https://travis-ci.org/ezypeeze/react-mozer)
 
 ## Purpose
 I've been developing forms for ages... it has been a pain! With the most recent frontend frameworks (React, Vue, Angular, ...),
@@ -12,7 +14,7 @@ It's still a work in progress, a lot needs to be done, and I'm developing new fe
 needs, but feel free to contribute!
 
 ## Install
-Install with `npm install react-mozer`. -- Its not in npm registry yet, use github repo in package.json if you want to try it out.
+Install with `npm install react-mozer`.
 
 ## Usage
 You can check [`examples` folder](/examples) for examples.
@@ -163,7 +165,7 @@ you might need some custom or non-native type of behaviour (e.g: input masks, se
   }
 ```
 
-*NOTE:* Try to always avoid add decoration styling logic inside the form element!
+**NOTE:** Try to always avoid add decoration styling logic inside the form element!
 Try to keep the form element as native as possible, to be easier to change between
 decorations in the future, e.g:
 
@@ -241,12 +243,12 @@ If you want to decide the display error logic:
 
 ### Adding custom validation error messages
 By default, the form have some preset validations:
-- *required* (checks the existence)
-- *min* (checks if the value is bigger than a given one - works for numbers, text and dates)
-- *max* (checks if the value is lower than a given one - works for numbers, text and dates)
-- *pattern* (checks if the value matchs a regex)
-- *email* (checks if the value is a valid email)
-- *equalTo* (checks if the value is equal to some other form element value - e.g password and confirmPassword)
+- **required** (checks the existence)
+- **min** (checks if the value is bigger than a given one - works for numbers, text and dates)
+- **max** (checks if the value is lower than a given one - works for numbers, text and dates)
+- **pattern** (checks if the value matchs a regex)
+- **email** (checks if the value is a valid email)
+- **equalTo** (checks if the value is equal to some other form element value - e.g password and confirmPassword)
 
 All of these preset validations have an *english basic error message*. If you want to had your own, your you have custom validations:
 ```jsx
