@@ -1,4 +1,26 @@
 language: node_js
+sudo: false
 node_js:
   - 6
-  - 8
+deploy:
+  - provider: releases
+    api_key: ${GITHUB_API_KEY}
+    file:
+      - ./build/*
+      - ./.npmignore
+      - ./package.json
+      - ./API.md
+      - ./README.md
+      - ./LICENSE
+    on:
+      repo: ezypeeze/react-mozer
+      tags: true
+  - provider: npm
+    api_key: ${NPM_API_KEY}
+    email: ${NPM_EMAIL_ADDRESS}
+    on:
+      repo: ezypeeze/react-mozer
+      tags: true
+branches:
+  only:
+    - master

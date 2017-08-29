@@ -1,6 +1,8 @@
 # react-mozer
 Reactish Reactive Forms.
 
+[![Build Status](https://travis-ci.org/ezypeeze/react-mozer.svg?branch=master)](https://travis-ci.org/ezypeeze/react-mozer)
+
 ## Purpose
 I've been developing forms for ages... it has been a pain! With the most recent frontend frameworks (React, Vue, Angular, ...),
 it has been easier and easier to make pretty and reactive forms that helps a lot to the users/customers experience.
