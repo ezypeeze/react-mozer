@@ -103,9 +103,13 @@ class ExampleOneForm extends React.Component {
         if (element.getName() === 'lastname') {
             if (element.getValue()) {
                 this.refs.form.setValidations('firstname', [Validators.required()]);
+                this.refs.form.get('firstname').disable();
             } else {
                 this.refs.form.cleanValidations('firstname');
+                this.refs.form.get('firstname').enable();
             }
+
+
         }
 
         this.refs.form.validate().then(valid => this.setState({values, valid}));

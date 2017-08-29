@@ -14,7 +14,8 @@ export default function ElementHOC(Component) {
 
         state = {
             touched: false,
-            changed: false
+            changed: false,
+            disabled: this.props.disabled
         };
 
         /**
@@ -26,10 +27,29 @@ export default function ElementHOC(Component) {
             return (
                 <Component
                     {...this.props}
+                    disabled={this.state.disabled}
                     onChange={this.handleChange}
                     onTouch={this.handleTouch}
                 />
             );
+        }
+
+        /**
+         * Disables the form element.
+         */
+        disable() {
+            !this.state.disabled && this.setState({disabled: true});
+
+            return this;
+        }
+
+        /**
+         * Enables the form element.
+         */
+        enable() {
+            this.state.disabled && this.setState({disabled: false});
+
+            return this;
         }
 
         /**
@@ -88,6 +108,15 @@ export default function ElementHOC(Component) {
          */
         getRoot() {
             return this.props.root;
+        }
+
+        /**
+         * Checks if the form element currently is disabled.
+         *
+         * @return {boolean}
+         */
+        isDisabled() {
+            return this.state.disabled;
         }
 
         /**

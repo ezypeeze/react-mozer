@@ -6,6 +6,7 @@ class Input extends React.Component {
 
     static propTypes = {
         name: PropTypes.string.isRequired,
+        disabled: PropTypes.bool,
         value: PropTypes.any
     };
 
