@@ -32,6 +32,14 @@ class Input extends React.Component {
                            checked={!!value}
                     />
                 );
+            case 'file':
+                return (
+                    <input {...props}
+                           type={type}
+                           onChange={this.handleChange}
+                           onFocus={onTouch}
+                    />
+                );
             default:
                 return (
                     <input {...props}
@@ -44,12 +52,16 @@ class Input extends React.Component {
         }
     }
 
-    handleChange = (event) => {
-        if (this.props.onChange) {
-            if (this.props.type === 'checkbox') {
-                this.props.onChange(event.target.checked);
+    handleChange = ({target}) => {
+        const {type, onChange} = this.props;
+
+        if (onChange) {
+            if (type === 'checkbox') {
+                onChange(target.checked);
+            } else if (type === 'file') {
+                onChange(target.files);
             } else {
-                this.props.onChange(event.target.value);
+                onChange(target.value);
             }
         }
     };

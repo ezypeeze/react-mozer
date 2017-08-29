@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {ElementHOC} from '../..';
+import {ElementHOC} from '../../src';
 
 class CustomElementChoose extends React.Component {
     static propTypes = {

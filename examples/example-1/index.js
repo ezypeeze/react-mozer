@@ -73,6 +73,8 @@ class ExampleOneForm extends React.Component {
 
                     <Input label="Confirm Password" type="text" name="passwordConfirmation" />
 
+                    <Input label="Image" type="file" name="image" />
+
                     <button type="submit">Submit</button>
                 </Form>
 

@@ -6,6 +6,7 @@ deploy:
   - provider: npm
     api_key: ${NPM_API_KEY}
     email: ${NPM_EMAIL_ADDRESS}
+    skip_cleanup: true
     on:
       repo: ezypeeze/react-mozer
       tags: true
