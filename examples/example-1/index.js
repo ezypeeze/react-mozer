@@ -1,5 +1,5 @@
 import React from 'react';
-import {Form, DefaultDecorator, Validators, Input, Select} from '../../src/index';
+import {Form, DefaultDecorator, Validators, Input, Select, TextArea} from '../../src/index';
 import BootstrapDecorator from '../BootstrapDecorator';
 import CustomElementChoose from "./CustomElementChoose";
 
@@ -75,6 +75,8 @@ class ExampleOneForm extends React.Component {
 
                     <Input label="Image" type="file" name="image" />
 
+                    <TextArea label="About me" name="aboutMe" />
+
                     <button type="submit">Submit</button>
                 </Form>
 
@@ -95,8 +97,7 @@ class ExampleOneForm extends React.Component {
     }
 
     _handleValidationLogic = (element) => {
-        return true;
-        // return element.valueChanged();
+        return element.getRoot().isSubmitted();
     };
 
     _handleChange = (values, element) => {
@@ -108,8 +109,6 @@ class ExampleOneForm extends React.Component {
                 this.refs.form.cleanValidations('firstname');
                 this.refs.form.get('firstname').enable();
             }
-
-
         }
 
         this.refs.form.validate().then(valid => this.setState({values, valid}));

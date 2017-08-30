@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Form from "./Form";
 
 export default function ElementHOC(Component) {
     return class extends React.Component {
@@ -9,7 +10,7 @@ export default function ElementHOC(Component) {
             onChange: PropTypes.func,
             onTouch: PropTypes.func,
             value: PropTypes.any,
-            root: PropTypes.element
+            root: PropTypes.instanceOf(Form)
         };
 
         state = {
@@ -24,9 +25,11 @@ export default function ElementHOC(Component) {
          * @return {XML}
          */
         render() {
+            const {root, ...props} = this.props;
+
             return (
                 <Component
-                    {...this.props}
+                    {...props}
                     disabled={this.state.disabled}
                     onChange={this.handleChange}
                     onTouch={this.handleTouch}

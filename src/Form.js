@@ -240,6 +240,7 @@ class Form extends React.Component {
                     ...child.props,
                     onChange: this._handleElementChange(child.props.name, child.props),
                     ref: this._setElementReference(child),
+                    root: this,
                     valid: errorMessages && errorMessages[child.props.name] && errorMessages[child.props.name].length > 0,
                     value: this.state.values[child.props.name] || ''
                 });
@@ -349,12 +350,12 @@ class Form extends React.Component {
      */
     _handleSubmit = (event) => {
         event.preventDefault();
-        this.validate()
-            .then(valid => {
-                this.setState({submitted: true}, () => {
-                    this.props.onSubmit && this.props.onSubmit(this.state.values, valid, event);
+        this.setState({submitted: true}, () => {
+            this.validate()
+                .then(valid => {
+                    this.setState({valid}, () => this.props.onSubmit && this.props.onSubmit(this.state.values, valid, event));
                 });
-            });
+        });
     }
 
 }
