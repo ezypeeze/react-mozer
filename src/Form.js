@@ -15,6 +15,7 @@ class Form extends React.Component {
         onInvalid: PropTypes.func,
         displayErrorsCondition: PropTypes.func,
         validations: PropTypes.object,
+        defaultValues: PropTypes.object,
         values: PropTypes.object
     };
 
@@ -26,7 +27,7 @@ class Form extends React.Component {
     state = {
         errorMessages: {},
         validations: this.props.validations || {},
-        values: this.props.values || {},
+        values: this.props.defaultValues || this.props.values || {},
         submitted: false
     };
 
@@ -40,6 +41,32 @@ class Form extends React.Component {
      */
     componentDidMount() {
         this.validate(false);
+    }
+
+    componentWillMount() {
+        if (this.props.values && this.props.defaultValues) {
+            throw new Error('Either use "values" or "defaultValues" property. You cant use both.');
+        }
+
+        if (this.props.values && !this.props.onChange) {
+            throw new Error('You must use "onChange" with "values" property when you are using controlled state.');
+        }
+    }
+
+    /**
+     * If initial props changes, then we must set the new props.
+     * @param newProps
+     */
+    componentWillReceiveProps(newProps) {
+        if (newProps.values && newProps.defaultValues) {
+            throw new Error('Either use "values" or "defaultValues" property. You cant use both.');
+        }
+
+        if (newProps.values && !newProps.onChange) {
+            throw new Error('You must use "onChange" with "values" property when you are using controlled state.');
+        }
+
+        newProps.values && this.setState({values: newProps.values});
     }
 
     /**

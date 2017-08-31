@@ -7,11 +7,7 @@ class ExampleOneForm extends React.Component {
     static propTypes = {};
     static defaultProps = {};
     state = {
-        values: {
-            firstname: 'Pedro',
-            terms: true,
-            country: 'spain'
-        },
+        values: {},
         validations: {
             address: [Validators.required()],
             email: [Validators.email()],
@@ -19,6 +15,16 @@ class ExampleOneForm extends React.Component {
             passwordConfirmation: [Validators.equalTo('password')]
         }
     };
+
+    componentDidMount() {
+        setTimeout(() => this.setState({
+            values: {
+                firstname: 'Pedro',
+                terms: true,
+                country: 'spain'
+            }
+        }), 1000);
+    }
 
     render() {
         const {values, validations, valid} = this.state;
@@ -30,11 +36,10 @@ class ExampleOneForm extends React.Component {
                 {typeof valid === 'boolean' && (<pre>Is form valid: {valid ? 'yes' : 'no'}</pre>)}
                 <pre>{JSON.stringify(values)}</pre>
                 <Form ref="form"
-                      onSubmit={this._handleSubmtt}
+                      onSubmit={this._handleSubmit}
+                      defaultValues={{firstname: 'pedro'}}
                       onChange={this._handleChange}
-                      values={values}
                       validations={validations}
-                      displayErrorsCondition={this._handleValidationLogic}
                       decorator={<BootstrapDecorator size="sm" horizontal={true}/>}
                 >
                     <div className="row">
