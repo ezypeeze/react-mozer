@@ -85,6 +85,10 @@ class ExampleOneForm extends React.Component {
                     <button type="submit">Submit</button>
                 </Form>
 
+                <button type="button" onClick={() => this.refs.form.submit()}>
+                    Manual Submit
+                </button>
+
 
                 <div style={{marginTop: '30px'}}>
                     key:

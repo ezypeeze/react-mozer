@@ -86,6 +86,13 @@ class Form extends React.Component {
     }
 
     /**
+     * Performs a manual submit.
+     */
+    submit() {
+        return this._handleSubmit();
+    }
+
+    /**
      * Check if the form was already submitted.
      *
      * @return {boolean}
@@ -376,11 +383,11 @@ class Form extends React.Component {
      * @private
      */
     _handleSubmit = (event) => {
-        event.preventDefault();
+        event && event.preventDefault();
         this.setState({submitted: true}, () => {
             this.validate()
                 .then(valid => {
-                    this.setState({valid}, () => this.props.onSubmit && this.props.onSubmit(this.state.values, valid, event));
+                    this.setState({valid}, () => this.props.onSubmit && this.props.onSubmit(this.state.values, valid, this));
                 });
         });
     }
