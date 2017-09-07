@@ -16,12 +16,14 @@ class Form extends React.Component {
         displayErrorsCondition: PropTypes.func,
         validations: PropTypes.object,
         defaultValues: PropTypes.object,
-        values: PropTypes.object
+        values: PropTypes.object,
+        submitOnlyOnValid: PropTypes.bool
     };
 
     static defaultProps = {
         decorator: <Decorator />,
-        messageProvider: defaultMessageProvider
+        messageProvider: defaultMessageProvider,
+        submitOnlyOnValid: false
     };
 
     state = {
@@ -387,7 +389,11 @@ class Form extends React.Component {
         this.setState({submitted: true}, () => {
             this.validate()
                 .then(valid => {
-                    this.setState({valid}, () => this.props.onSubmit && this.props.onSubmit(this.state.values, valid, this));
+                    this.setState({valid}, () => {
+                        if (!this.props.submitOnlyOnValid || (this.props.submitOnlyOnValid && valid)) {
+                            this.props.onSubmit && this.props.onSubmit(this.state.values, valid, this)
+                        }
+                    });
                 });
         });
     }

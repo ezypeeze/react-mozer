@@ -41,6 +41,7 @@ class ExampleOneForm extends React.Component {
                       onChange={this._handleChange}
                       validations={validations}
                       decorator={<BootstrapDecorator size="sm" horizontal={true}/>}
+                      submitOnlyOnValid={false}
                 >
                     <div className="row">
                         <div className="col">
@@ -124,7 +125,7 @@ class ExampleOneForm extends React.Component {
     };
 
     _handleSubmit = (values, valid) => {
-        this.setState({values, valid});
+        alert('Form submit, valid:' + valid ? 'yes' : 'no');
     }
 }
 
