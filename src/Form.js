@@ -21,7 +21,7 @@ class Form extends React.Component {
     };
 
     static defaultProps = {
-        decorator: <Decorator />,
+        decorator: <Decorator/>,
         messageProvider: defaultMessageProvider,
         submitOnlyOnValid: false
     };
@@ -77,13 +77,19 @@ class Form extends React.Component {
      * @return
      */
     render() {
+        const formContainer = !!this.props.onSubmit;
+
         // Clean up elements references for each re-render.
         this.elementReferences = {};
 
-        return (
+        return formContainer ? (
             <form onSubmit={this._handleSubmit} className={this.props.className}>
                 {this._lookUpForElements(this.props.children)}
             </form>
+        ) : (
+            <div className={this.props.className}>
+                {this._lookUpForElements(this.props.children)}
+            </div>
         );
     }
 
@@ -139,7 +145,7 @@ class Form extends React.Component {
             const displayFieldErrors = displayErrors ?
                 this.props.displayErrorsCondition ?
                     this.props.displayErrorsCondition(this.elementReferences[fieldName]) : true
-                    :
+                :
                 false;
 
             (validations[fieldName] || []).map(cb => {
@@ -374,6 +380,15 @@ class Form extends React.Component {
      * @private
      */
     _emitChange = (instance) => () => {
+        if (!this.props.onSubmit && this.props.onChange) {
+            return this.validate()
+                .then(valid => {
+                    this.setState({valid}, () => {
+                        this.props.onChange && this.props.onChange(this.state.values, instance);
+                    });
+                });
+        }
+
         this.props.onChange && this.props.onChange(this.state.values, instance);
     };
 
