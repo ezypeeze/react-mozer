@@ -14,7 +14,7 @@ class ExampleTwoForm extends React.Component {
     };
 
     render() {
-        const {values, validations, valid} = this.state;
+        const {values, shouldDisable, validations, valid} = this.state;
 
         return (
             <div className="container">
@@ -30,7 +30,7 @@ class ExampleTwoForm extends React.Component {
                 >
                     <div className="row">
                         <div className="col">
-                            <Input label="First Name" type="text" name="firstname"/>
+                            <Input label="First Name" type="text" name="firstname" disabled={shouldDisable}/>
                         </div>
                         <div className="col">
                             <DefaultDecorator>
@@ -52,7 +52,7 @@ class ExampleTwoForm extends React.Component {
     };
 
     _handleChange = (values, element) => {
-        this.setState({values, valid: element.getRoot().isValid()});
+        this.setState({values, valid: element.getRoot().isValid(), shouldDisable: !this.state.shouldDisable});
     };
 
 }

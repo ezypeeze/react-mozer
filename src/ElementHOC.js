@@ -19,6 +19,12 @@ export default function ElementHOC(Component) {
             disabled: this.props.disabled
         };
 
+        componentWillReceiveProps(newProps) {
+            if (this.props.disabled !== newProps.disabled) {
+                this.setState({disabled: newProps.disabled});
+            }
+        }
+
         /**
          * Renders the form element with event handling and some required props.
          *
