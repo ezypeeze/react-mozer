@@ -39,6 +39,12 @@ class ExampleTwoForm extends React.Component {
                         </div>
                     </div>
 
+                    <Form decorator={<BootstrapDecorator size="sm" horizontal={true}/>}
+                          values={values}
+                          onChange={this._handleChange}>
+                        <Input name="firstname_subform" label="Firstname on Sub-Form" />
+                    </Form>
+
                     <Input label="Email" type="text" name="email" />
 
                     <button type="submit">Submit</button>

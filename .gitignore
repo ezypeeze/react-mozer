@@ -3,3 +3,4 @@
 *.log
 .idea
 /build
+/package-lock.json

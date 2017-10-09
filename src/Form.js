@@ -77,19 +77,16 @@ class Form extends React.Component {
      * @return
      */
     render() {
-        const formContainer = !!this.props.onSubmit;
+        const {onSubmit, className, children} = this.props,
+            formContainer = !!onSubmit;
 
         // Clean up elements references for each re-render.
         this.elementReferences = {};
 
         return formContainer ? (
-            <form onSubmit={this._handleSubmit} className={this.props.className}>
-                {this._lookUpForElements(this.props.children)}
-            </form>
+            <form onSubmit={this._handleSubmit} className={className}>{this._lookUpForElements(children)}</form>
         ) : (
-            <div className={this.props.className}>
-                {this._lookUpForElements(this.props.children)}
-            </div>
+            <div className={className}>{this._lookUpForElements(children)}</div>
         );
     }
 
@@ -291,7 +288,7 @@ class Form extends React.Component {
                     ...decorator.props,
                     errorMessages: errorMessages && errorMessages[child.props.name]
                 }, element) : element;
-            } else if (child && child.props && child.props.children) {
+            } else if (child && child.props && child.props.children && child.type !== Form) {
                 return React.cloneElement(child, {...child.props}, this._lookUpForElements(child.props.children, !child.props.decorator));
             }
 
