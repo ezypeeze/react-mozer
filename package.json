@@ -1,6 +1,6 @@
 {
     "name": "react-mozer",
-    "version": "0.1.13",
+    "version": "0.1.14",
     "description": "Reactish Reactive Forms",
     "main": "build/index.js",
     "scripts": {
@@ -31,10 +31,6 @@
     },
     "author": "Pedro Pereira",
     "license": "MIT",
-    "dependencies": {
-        "react": "^15.6.1",
-        "react-dom": "^15.6.1"
-    },
     "devDependencies": {
         "babel-cli": "^6.24.1",
         "babel-core": "^6.25.0",
@@ -53,12 +49,15 @@
         "jest": "^20.0.4",
         "polished": "^1.3.0",
         "prop-types": "^15.5.10",
+        "react": "^16.0.0",
+        "react-dom": "^16.0.0",
         "react-test-renderer": "^15.6.1",
         "styled-components": "^2.1.1",
         "webpack": "^3.4.0",
         "webpack-dev-server": "^2.6.1"
     },
     "peerDependencies": {
-        "react": "^15.0.0 || ^16.0.0"
+        "react": "^15.0.0 || ^16.0.0",
+        "react-dom": "^15.0.0 || ^16.0.0"
     }
 }
