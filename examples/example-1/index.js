@@ -37,7 +37,7 @@ class ExampleOneForm extends React.Component {
                 <pre>{JSON.stringify(values)}</pre>
                 <Form ref="form"
                       onSubmit={this._handleSubmit}
-                      defaultValues={{firstname: 'pedro'}}
+                      values={values}
                       onChange={this._handleChange}
                       validations={validations}
                       decorator={<BootstrapDecorator size="sm" horizontal={true}/>}
@@ -121,7 +121,9 @@ class ExampleOneForm extends React.Component {
             }
         }
 
-        this.refs.form.validate().then(valid => this.setState({values, valid}));
+        this.setState({values}, () => {
+            this.refs.form.validate().then(valid => this.setState({valid}));
+        });
     };
 
     _handleSubmit = (values, valid) => {

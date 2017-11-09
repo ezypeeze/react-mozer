@@ -368,7 +368,12 @@ class Form extends React.Component {
      * @private
      */
     _handleElementChange = (name, childProps) => (value) => {
-        this.setState({values: Object.assign(this.state.values, {[name]: value})}, this._emitChange(this.elementReferences[name]));
+        const values = Object.assign({}, this.state.values, {[name]: value});
+        if (this.props.defaultValues) {
+            this.setState({values}, this._emitChange(this.elementReferences[name]));
+        } else {
+            this._emitChange(this.elementReferences[name], values)();
+        }
     };
 
     /**
@@ -376,17 +381,17 @@ class Form extends React.Component {
      *
      * @private
      */
-    _emitChange = (instance) => () => {
+    _emitChange = (instance, values) => () => {
         if (!this.props.onSubmit && this.props.onChange) {
             return this.validate()
                 .then(valid => {
                     this.setState({valid}, () => {
-                        this.props.onChange && this.props.onChange(this.state.values, instance);
+                        this.props.onChange && this.props.onChange(values || this.state.values, instance);
                     });
                 });
         }
 
-        this.props.onChange && this.props.onChange(this.state.values, instance);
+        this.props.onChange && this.props.onChange(values || this.state.values, instance);
     };
 
     /**
