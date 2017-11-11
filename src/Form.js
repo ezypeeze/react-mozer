@@ -188,6 +188,7 @@ class Form extends React.Component {
 
     /**
      * Sets a value in a form element, both in data value object and in native element.
+     * Only will execute if form is with uncontrolled state.
      *
      * @param key
      * @param value
@@ -195,9 +196,9 @@ class Form extends React.Component {
      */
     setValue(key, value) {
         const {values} = this.state;
-        if (this.elementReferences[key] && this.elementReferences[key].setValue) {
+        if (this.elementReferences[key] && this.elementReferences[key].setValue && !this.props.onChange) {
             values[key] = this.elementReferences[key].setValue(value);
-            this.setState({values}, this._emitChange(this.elementReferences[key]));
+            this.setState({values}, this._emitChange(this.elementReferences[key], values));
             return true;
         }
 
@@ -369,8 +370,8 @@ class Form extends React.Component {
      */
     _handleElementChange = (name, childProps) => (value) => {
         const values = Object.assign({}, this.state.values, {[name]: value});
-        if (this.props.defaultValues) {
-            this.setState({values}, this._emitChange(this.elementReferences[name]));
+        if (!this.props.values) {
+            this.setState({values}, this._emitChange(this.elementReferences[name], this.state.values));
         } else {
             this._emitChange(this.elementReferences[name], values)();
         }
@@ -386,12 +387,12 @@ class Form extends React.Component {
             return this.validate()
                 .then(valid => {
                     this.setState({valid}, () => {
-                        this.props.onChange && this.props.onChange(values || this.state.values, instance);
+                        this.props.onChange && this.props.onChange(values, instance);
                     });
                 });
         }
 
-        this.props.onChange && this.props.onChange(values || this.state.values, instance);
+        this.props.onChange && this.props.onChange(values, instance);
     };
 
     /**

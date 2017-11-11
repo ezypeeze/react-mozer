@@ -37,8 +37,6 @@ class ExampleOneForm extends React.Component {
                 <pre>{JSON.stringify(values)}</pre>
                 <Form ref="form"
                       onSubmit={this._handleSubmit}
-                      values={values}
-                      onChange={this._handleChange}
                       validations={validations}
                       decorator={<BootstrapDecorator size="sm" horizontal={true}/>}
                       submitOnlyOnValid={false}
