@@ -17,7 +17,8 @@ class Form extends React.Component {
         validations: PropTypes.object,
         defaultValues: PropTypes.object,
         values: PropTypes.object,
-        submitOnlyOnValid: PropTypes.bool
+        submitOnlyOnValid: PropTypes.bool,
+        disableSubmitOnEnter: PropTypes.bool,
     };
 
     static defaultProps = {
@@ -84,9 +85,13 @@ class Form extends React.Component {
         this.elementReferences = {};
 
         return formContainer ? (
-            <form onSubmit={this._handleSubmit} className={className}>{this._lookUpForElements(children)}</form>
+            <form className={className} onKeyPress={this._handleKeyPress} onSubmit={this._handleSubmit}>
+                {this._lookUpForElements(children)}
+            </form>
         ) : (
-            <div className={className}>{this._lookUpForElements(children)}</div>
+            <div className={className}>
+                {this._lookUpForElements(children)}
+            </div>
         );
     }
 
@@ -393,6 +398,19 @@ class Form extends React.Component {
         }
 
         this.props.onChange && this.props.onChange(values, instance);
+    };
+
+    /**
+     * Handles key press on form.
+     * If property 'disableSubmitOnEnter' is active, will disable submission on enter.
+     *
+     * @param event
+     * @private
+     */
+    _handleKeyPress = (event) => {
+        if (this.props.disableSubmitOnEnter && event.which === 13) {
+            event.preventDefault();
+        }
     };
 
     /**
