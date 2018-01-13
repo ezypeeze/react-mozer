@@ -40,6 +40,7 @@ class ExampleOneForm extends React.Component {
                       validations={validations}
                       decorator={<BootstrapDecorator size="sm" horizontal={true}/>}
                       submitOnlyOnValid={false}
+                      disableSubmitOnEnter
                 >
                     <div className="row">
                         <div className="col">
@@ -52,6 +53,7 @@ class ExampleOneForm extends React.Component {
                         </div>
                     </div>
 
+                    <TextArea label="Description" name="description" />
                     <Input label="Email" type="text" name="email" />
 
                     <div>

@@ -408,7 +408,7 @@ class Form extends React.Component {
      * @private
      */
     _handleKeyPress = (event) => {
-        if (this.props.disableSubmitOnEnter && event.which === 13) {
+        if (this.props.disableSubmitOnEnter && event.which === 13 && event.target.tagName !== 'TEXTAREA') {
             event.preventDefault();
         }
     };
