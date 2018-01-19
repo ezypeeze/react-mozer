@@ -39,6 +39,7 @@ class ExampleOneForm extends React.Component {
                       onSubmit={this._handleSubmit}
                       validations={validations}
                       decorator={<BootstrapDecorator size="sm" horizontal={true}/>}
+                      defaultValues={{number: 0}}
                       submitOnlyOnValid={false}
                       disableSubmitOnEnter
                 >
@@ -55,6 +56,7 @@ class ExampleOneForm extends React.Component {
 
                     <TextArea label="Description" name="description" />
                     <Input label="Email" type="text" name="email" />
+                    <Input label="Number" type="number" name="number" />
 
                     <div>
                         <Input label="Address" type="text" name="address"/>

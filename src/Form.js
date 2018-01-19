@@ -287,7 +287,7 @@ class Form extends React.Component {
                     ref: this._setElementReference(child),
                     root: this,
                     valid: errorMessages && errorMessages[child.props.name] && errorMessages[child.props.name].length > 0,
-                    value: this.state.values[child.props.name] || ''
+                    value: typeof this.state.values[child.props.name] !== 'undefined' ? this.state.values[child.props.name] : ''
                 });
 
                 return appendDecorator ? React.cloneElement(decorator, {

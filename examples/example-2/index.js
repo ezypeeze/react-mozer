@@ -5,7 +5,8 @@ import BootstrapDecorator from '../BootstrapDecorator';
 class ExampleTwoForm extends React.Component {
     state = {
         values: {
-            firstname: 'test'
+            firstname: 'test',
+            number: 0
         },
         validations: {
             firstname: [Validators.required()],
@@ -38,6 +39,8 @@ class ExampleTwoForm extends React.Component {
                             </DefaultDecorator>
                         </div>
                     </div>
+
+                    <Input label="Number" type="number" name="number" />
 
                     <Form decorator={<BootstrapDecorator size="sm" horizontal={true}/>}
                           values={values}
