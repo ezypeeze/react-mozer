@@ -39,7 +39,8 @@ class ExampleOneForm extends React.Component {
                       onSubmit={this._handleSubmit}
                       validations={validations}
                       decorator={<BootstrapDecorator size="sm" horizontal={true}/>}
-                      defaultValues={{number: 0}}
+                      values={values}
+                      onChange={values => this.setState({values})}
                       submitOnlyOnValid={false}
                       disableSubmitOnEnter
                 >

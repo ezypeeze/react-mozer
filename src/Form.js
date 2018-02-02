@@ -208,9 +208,13 @@ class Form extends React.Component {
      */
     setValue(key, value) {
         const {values} = this.state;
-        if (this.elementReferences[key] && this.elementReferences[key].setValue && !this.props.onChange) {
+        if (this.elementReferences[key] && this.elementReferences[key].setValue) {
             values[key] = this.elementReferences[key].setValue(value);
-            this.setState({values}, this._emitChange(this.elementReferences[key], values));
+            if (!this.props.onChange) {
+                this.setState({values}, this._emitChange(this.elementReferences[key], values));
+            } else {
+                this._emitChange(this.elementReferences[key], values)();
+            }
             return true;
         }
 
