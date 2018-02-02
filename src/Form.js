@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ElementHOC from './ElementHOC';
 import Decorator from "./DefaultDecorator"
 import {defaultMessageProvider} from "./Utility";
+import DecoratorHOC from './DecoratorHOC';
 
 class Form extends React.Component {
     static propTypes = {
@@ -19,12 +20,15 @@ class Form extends React.Component {
         values: PropTypes.object,
         submitOnlyOnValid: PropTypes.bool,
         disableSubmitOnEnter: PropTypes.bool,
+        validateOnChange: PropTypes.bool
     };
 
     static defaultProps = {
-        decorator: <Decorator/>,
+        decorator: Decorator,
         messageProvider: defaultMessageProvider,
-        submitOnlyOnValid: false
+        submitOnlyOnValid: false,
+        disableSubmitOnEnter: false,
+        validateOnChange: false
     };
 
     state = {
@@ -43,9 +47,12 @@ class Form extends React.Component {
      * After first mounting render, we will validate the data without showing error messages.
      */
     componentDidMount() {
-        this.validate(false);
+        return this.validate(false);
     }
 
+    /**
+     * Only checking if its a valid controlled/uncontrolled form.
+     */
     componentWillMount() {
         if (this.props.values && this.props.defaultValues) {
             throw new Error('Either use "values" or "defaultValues" property. You cant use both.');
@@ -277,25 +284,27 @@ class Form extends React.Component {
      */
     _lookUpForElements(children, appendDecorator = true) {
         const {decorator} = this.props;
-        const {errorMessages} = this.state;
+        const {errorMessages, values} = this.state;
 
         return React.Children.map(children, (child) => {
+            const props = child && child.props;
+
             if (this._isValidElement(child)) {
+                const name = props.name;
                 const element = React.cloneElement(child, {
-                    ...child.props,
-                    onChange: this._handleElementChange(child.props.name, child.props),
+                    ...props,
+                    onChange: this._handleElementChange(name, props),
                     ref: this._setElementReference(child),
                     root: this,
-                    valid: errorMessages && errorMessages[child.props.name] && errorMessages[child.props.name].length > 0,
-                    value: typeof this.state.values[child.props.name] !== 'undefined' ? this.state.values[child.props.name] : ''
+                    valid: errorMessages && errorMessages[name] && errorMessages[name].length > 0,
+                    value: typeof values[name] !== 'undefined' ? values[name] : ''
                 });
 
-                return appendDecorator ? React.cloneElement(decorator, {
-                    ...decorator.props,
-                    errorMessages: errorMessages && errorMessages[child.props.name]
+                return appendDecorator && decorator && decorator.type ? React.createElement(decorator.type, {
+                    errorMessages: errorMessages && errorMessages[name]
                 }, element) : element;
-            } else if (child && child.props && child.props.children && child.type !== Form) {
-                return React.cloneElement(child, {...child.props}, this._lookUpForElements(child.props.children, !child.props.decorator));
+            } else if (props && props.children && child.type !== Form) {
+                return React.cloneElement(child, {...props}, this._lookUpForElements(props.children, !props.decorator));
             }
 
             return child;
@@ -346,7 +355,7 @@ class Form extends React.Component {
      * @private
      */
     _isValidElement(child) {
-        const isValid = child && child.props && !!child.props.name && child.type && child.type.displayName === 'ElementComponent';
+        const isValid = child && child.props && !!child.props.name && child.type && child.type.displayName === ElementHOC.displayName;
         if (isValid && child.props.value) {
             this.setState({values: Object.assign(this.state.values, {[child.props.name]: child.props.value})});
         }
@@ -388,7 +397,7 @@ class Form extends React.Component {
      * @private
      */
     _emitChange = (instance, values) => () => {
-        if (!this.props.onSubmit && this.props.onChange) {
+        if (this.props.validateOnChange) {
             return this.validate()
                 .then(valid => {
                     this.setState({valid}, () => {

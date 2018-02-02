@@ -4,7 +4,9 @@ import Form from "./Form";
 
 export default function ElementHOC(Component) {
     return class extends React.Component {
+
         static displayName = 'ElementComponent';
+
         static propTypes = {
             label: PropTypes.string,
             onChange: PropTypes.func,
@@ -173,3 +175,5 @@ export default function ElementHOC(Component) {
 
     };
 }
+
+ElementHOC.displayName = 'ElementComponent';

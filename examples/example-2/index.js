@@ -28,6 +28,7 @@ class ExampleTwoForm extends React.Component {
                       validations={validations}
                       decorator={<BootstrapDecorator size="sm" horizontal={true}/>}
                       displayErrorsCondition={this.handleDisplayErrorsCondition}
+                      validateOnChange
                 >
                     <div className="row">
                         <div className="col">
