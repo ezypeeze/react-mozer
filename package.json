@@ -1,6 +1,6 @@
 {
     "name": "react-mozer",
-    "version": "0.1.19",
+    "version": "0.1.20",
     "description": "Reactish Reactive Forms",
     "main": "build/index.js",
     "scripts": {
