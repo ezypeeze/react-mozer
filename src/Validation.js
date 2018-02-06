@@ -10,20 +10,33 @@ export function required() {
 
 export function min(minValue, type) {
     return (value, done) => {
+        if (!value) return done({min: true});
         switch (type) {
             case 'date':
                 done({
-                    min: new Date(minValue) < new Date(value)
+                    min: {
+                        valid: new Date(minValue) < new Date(value),
+                        min: minValue,
+                        type
+                    }
                 });
                 break;
             case 'number':
                 done({
-                    min: parseFloat(minValue) < parseFloat(value)
+                    min: {
+                        valid: parseFloat(minValue) < parseFloat(value),
+                        min: minValue,
+                        type
+                    }
                 });
                 break;
             default:
                 done({
-                    min: minValue.length < value
+                    min: {
+                        valid: minValue < value.length,
+                        min: minValue,
+                        type
+                    }
                 });
                 break;
         }
@@ -32,20 +45,33 @@ export function min(minValue, type) {
 
 export function max(maxValue, type) {
     return (value, done) => {
+        if (!value) return done({max: true});
         switch (type) {
             case 'date':
                 done({
-                    max: new Date(maxValue) > new Date(value)
+                    max: {
+                        valid: new Date(maxValue) > new Date(value),
+                        max: maxValue,
+                        type
+                    }
                 });
                 break;
             case 'number':
                 done({
-                    max: parseFloat(maxValue) > parseFloat(value)
+                    max: {
+                        valid: parseFloat(maxValue) > parseFloat(value),
+                        max: maxValue,
+                        type
+                    }
                 });
                 break;
             default:
                 done({
-                    max: maxValue.length > value
+                    max: {
+                        valid: maxValue > value.length,
+                        max: maxValue,
+                        type
+                    }
                 });
                 break;
         }

@@ -9,7 +9,7 @@ class ExampleOneForm extends React.Component {
     state = {
         values: {},
         validations: {
-            address: [Validators.required()],
+            address: [Validators.required(), Validators.min(10)],
             email: [Validators.email()],
             gender: [Validators.required()],
             passwordConfirmation: [Validators.equalTo('password')]
@@ -130,7 +130,7 @@ class ExampleOneForm extends React.Component {
     };
 
     _handleSubmit = (values, valid) => {
-        alert('Form submit, valid:' + valid ? 'yes' : 'no');
+        alert('Form submit, valid:' + (valid ? 'yes' : 'no'));
     }
 }
 
